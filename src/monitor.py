@@ -10,11 +10,11 @@ import requests
 from datetime import datetime
 
 GITHUB_API = "https://api.github.com/search/repositories"
-# 搜索单应用软件：stars>10000，排除框架、库、模板、主题等项目类型
-QUERY = "stars:>10000 NOT:framework NOT:library NOT:starter NOT:template NOT:theme NOT:boilerplate NOT:cli NOT:toolkit NOT:sdk"
+# 搜索 stars>10000 的仓库，由 filter_single_apps 进一步过滤
+QUERY = "stars:>10000"
 SORT = "stars"
 ORDER = "desc"
-PER_PAGE = 30  # 获取更多以便过滤
+PER_PAGE = 100  # 获取更多以便过滤
 
 
 def fetch_top_repos(token=None, per_page=PER_PAGE):
@@ -46,15 +46,24 @@ def fetch_top_repos(token=None, per_page=PER_PAGE):
 
 
 def filter_single_apps(repos):
-    """过滤出单应用软件，排除框架、库等"""
+    """过滤出单应用软件，排除明显不是应用的仓库"""
     exclude_keywords = [
-        "framework", "library", "starter", "template", "theme",
-        "boilerplate", "cli", "toolkit", "sdk", "plugin", "extension",
-        "bundler", "packager", "generator", "scaffold", "seed",
-        "bootstrap", "ui-kit", "component", "components", "icons",
-        "icon-set", "design-system", "styleguide", "blocks",
-        "-starter", "starter-", "example", "demo", "sample",
-        "collection", "list", "awesome", "curated"
+        # 模板/种子
+        "starter", "boilerplate", "seed", "scaffold",
+        "template", "-example", "-demo", "-sample",
+        # 列表/集合
+        "awesome", "list", "collection", "curated",
+        # 学习/教程
+        "tutorial", "learning", "course", "study", "interview",
+        "education", "learn", "teaching",
+        # 书籍/文档
+        "book", "books", "documentation", "docs",
+        # 算法/数据结构
+        "algorithm", "algorithms",
+        # 框架/库 (本身是框架而非应用)
+        "framework", "library",
+        # 其他非应用项目
+        "996.icu"
     ]
 
     filtered = []
