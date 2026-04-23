@@ -1,12 +1,12 @@
 name: Daily GitHub Top 20 Monitor
 
-  on:
+on:
     schedule:
       # 每天 09:00 (北京时间 = UTC 1:00)
       - cron: '0 1 * * *'
     workflow_dispatch:
 
-  jobs:
+jobs:
     monitor:
       runs-on: ubuntu-latest
       env:
